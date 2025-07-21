@@ -19,7 +19,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="fixed top-0 left-0 w-[248px] h-screen z-10 bg-white flex flex-col">
+    <div className="fixed top-0 left-0 w-[268px] h-screen z-10 bg-white flex flex-col">
       {/* Logo */}
       <div className="flex justify-center mt-2 mb-10">
         <img src="/Logo.svg" alt="Dispax Logo" className="w-[97px] h-[67px]" />
