@@ -17,16 +17,17 @@ const PushNotification = () => {
 
   return (
     <div className="min-h-screen bg-[#EFF6FB] p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-xl font-semibold text-[#1B1E25]">Push Notification</h1>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-[#3F83F8] text-white text-sm px-4 py-2 rounded-md hover:bg-[#2563EB] transition-all"
+        >
+          + Create New Notification
+        </button>
+      </div>
       <div className="w-full mx-auto bg-white rounded-lg shadow-sm p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-xl font-semibold text-[#1B1E25]">Push Notification</h1>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-[#3F83F8] text-white text-sm px-4 py-2 rounded-md hover:bg-[#2563EB] transition-all"
-          >
-            + Create New Notification
-          </button>
-        </div>
+
 
         <div className="space-y-4">
           {notifications.map((item, index) => (
