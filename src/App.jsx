@@ -20,6 +20,8 @@ import Subscription from './pages/Subscription/Subscription';
 import Settings from './pages/Settings/Settings';
 
 import store from './redux/store';
+import Products from './pages/ShopOrders/Products';
+import Analytics from './components/Shop/Analytics';
 
 function App() {
   return (
@@ -41,8 +43,12 @@ function App() {
               <Route path="/bonus" element={<Bonus />} />
               <Route path="/customization" element={<Customization />} />
               <Route path="/reports-analytics" element={<ReportsAnalytics />} />
-              <Route path="/shop-orders" element={<ShopOrders />} />
-              <Route path="/push-notification" element={<PushNotification />} />
+              <Route path="/shop-orders" element={<ShopOrders />}>
+                <Route index element={<Navigate to="products" />} />
+                <Route path="products" element={<Products/>} />
+                <Route path="analytics" element={<Analytics />} />
+              </Route>
+                            <Route path="/push-notification" element={<PushNotification />} />
               <Route path="/events" element={<Events />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/subscription" element={<Subscription />} />
