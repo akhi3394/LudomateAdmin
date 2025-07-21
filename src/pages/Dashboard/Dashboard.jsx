@@ -17,6 +17,7 @@ const statusStyles = {
 const Dashboard = () => {
   return (
     <div className="p-6 bg-[#f1f6fb] min-h-screen space-y-6">
+      <h1 className='text-[28px] font-semibold'>Dashboard</h1>
       {/* Header Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[

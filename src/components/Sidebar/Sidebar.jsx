@@ -54,7 +54,7 @@ const Sidebar = () => {
       <div className="w-full px-[4px] mb-6">
         <Link
           to="/login"
-          className="w-[240px] h-[48px] text-[16px] font-medium gap-[32px] border border-[#FFC1C1] text-[#FFC1C1] text-center py-2 rounded-[8px] mx-auto flex items-center"
+          className="w-[240px] h-[48px] text-[16px] font-medium gap-[32px] border border-[#000] text-center py-2 rounded-[8px] mx-auto flex items-center"
         >
           <img src="/LogoutIcon.svg" alt="logout" className="w-[24px] h-[24px] ml-5" />
           Logout

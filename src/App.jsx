@@ -1,53 +1,52 @@
 import { Provider } from 'react-redux';
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
-// import ActiveCompany from './components/Dashboard/ActiveCompany';
-// import ActiveDrivers from './components/Dashboard/ActiveDrivers';
-// import ActiveTrucksData from './components/Dashboard/ActiveTrucks';
-// import OrderStatus from './components/Dashboard/OrderStatus';
-// import Revenue from './components/Dashboard/Revenue';
-// import TotalShipments from './components/Dashboard/TotalShipments';
 import Layout from './components/Layout/Layout';
-// import Customization from './pages/Customization/Customization';
 import Dashboard from './pages/Dashboard/Dashboard';
-// import InvoicePayment from './pages/InvoicePayment/InvoicePayment';
 import Login from './pages/Login/Login';
-// import ManageCompany from './pages/ManageCompany/ManageCompany';
-// import OrderShipping from './pages/OrderShipping/OrderShipping';
-// import ReportsData from './pages/ReportsData/ReportsData';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
-// import Security from './pages/Security/Security';
 import Signup from './pages/Signup/Signup';
-// import Support from './pages/Support/Support';
-// import UserRole from './pages/UserRole/UserRole';
+
+import UserManagement from './pages/UserManagement/UserManagement';
+import GameManagement from './pages/GameManagement/GameManagement';
+import Bonus from './pages/Bonus/Bonus';
+import Customization from './pages/Customization/Customization';
+import ReportsAnalytics from './pages/ReportsAnalytics/ReportsAnalytics';
+import ShopOrders from './pages/ShopOrders/ShopOrders';
+import PushNotification from './pages/PushNotification/PushNotification';
+import Events from './pages/Events/Events';
+import Messages from './pages/Messages/Messages';
+import Subscription from './pages/Subscription/Subscription';
+import Settings from './pages/Settings/Settings';
+
 import store from './redux/store';
-// import CompanyManagement from './components/ManageCompany/CompanyManagement/Index';
-// import Performance from './components/ManageCompany/CompanyManagement/Performance';
-// import ActivityLogs from './components/ManageCompany/CompanyManagement/ActivityLogs';
-import TruckManagement from './components/ManageCompany/TruckManagement/Index';
 
 function App() {
   return (
     <Provider store={store}>
       <Router>
-        <div
-          className="min-h-screen w-full"
-          // background: 'radial-gradient(circle at center, #080625 100%, #6F1AFF 0%)',
-          style={{
-            background: '#F0F6FA'
-          }}
-        >
+        <div className="min-h-screen w-full" style={{ background: '#F0F6FA' }}>
           <Routes>
-            {/* Routes without Sidebar and Header */}
+            {/* Auth Pages */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<Navigate to="/login" />} />
 
-            {/* Routes with Sidebar and Header */}
+            {/* Dashboard Layout Pages */}
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<Dashboard />} />
-    
+              <Route path="/user-management" element={<UserManagement />} />
+              <Route path="/game-management" element={<GameManagement />} />
+              <Route path="/bonus" element={<Bonus />} />
+              <Route path="/customization" element={<Customization />} />
+              <Route path="/reports-analytics" element={<ReportsAnalytics />} />
+              <Route path="/shop-orders" element={<ShopOrders />} />
+              <Route path="/push-notification" element={<PushNotification />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/messages" element={<Messages />} />
+              <Route path="/subscription" element={<Subscription />} />
+              <Route path="/settings" element={<Settings />} />
             </Route>
           </Routes>
         </div>
