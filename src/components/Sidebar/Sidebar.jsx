@@ -1,7 +1,12 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { logout } from '../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
+import { clearPersistedState } from '../../redux/store';
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const navItems = [
     { label: 'Dashboard', path: '/dashboard', icon: 'InactiveDashboardIcon.svg', activeIcon: 'ActiveDashboardIcon.svg' },
@@ -18,6 +23,17 @@ const Sidebar = () => {
     { label: 'Settings', path: '/settings', icon: 'InactiveSettings.svg', activeIcon: 'ActiveSettings.svg' }
   ];
 
+  const handleLogout = () => {
+    try {
+      dispatch(logout());
+      clearPersistedState();
+      console.log('Logout successful: Auth state cleared');
+      navigate('/login', { replace: true });
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   return (
     <div className="fixed top-0 left-0 w-[268px] h-screen z-10 bg-white flex flex-col">
       {/* Logo */}
@@ -32,11 +48,10 @@ const Sidebar = () => {
             <li key={item.path} className="flex justify-center mb-2">
               <Link
                 to={item.path}
-                className={`w-[240px] flex items-center text-[14px] font-medium gap-[18px] p-4 rounded transition-all duration-200 ${
-                  location.pathname === item.path || location.pathname.startsWith(item.path + '/')
+                className={`w-[240px] flex items-center text-[14px] font-medium gap-[18px] p-4 rounded transition-all duration-200 ${location.pathname === item.path || location.pathname.startsWith(item.path + '/')
                     ? 'bg-[#7234FC] text-white font-medium rounded-[8px]'
                     : 'text-black hover:bg-[#f5f5f5]'
-                }`}
+                  }`}
               >
                 <img
                   src={`/${location.pathname === item.path || location.pathname.startsWith(item.path + '/') ? item.activeIcon : item.icon}`}
@@ -52,13 +67,13 @@ const Sidebar = () => {
 
       {/* Logout at bottom */}
       <div className="w-full px-[4px] mb-6">
-        <Link
-          to="/login"
+        <button
+          onClick={handleLogout}
           className="w-[240px] h-[48px] text-[16px] font-medium gap-[32px] border border-[#000] text-center py-2 rounded-[8px] mx-auto flex items-center"
         >
           <img src="/LogoutIcon.svg" alt="logout" className="w-[24px] h-[24px] ml-5" />
           Logout
-        </Link>
+        </button>
       </div>
     </div>
   );
