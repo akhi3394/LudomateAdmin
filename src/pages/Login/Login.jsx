@@ -5,6 +5,7 @@ import LoginBg from '../../assets/loginandRegisterBg.png';
 import Logo from '/Logo.svg';
 import { useLoginMutation } from '../../redux/slices/apiSlice';
 import { setCredentials } from '../../redux/slices/authSlice';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useDispatch } from 'react-redux';
 
 const VALIDATION_ERRORS = {
@@ -23,6 +24,7 @@ const Login = () => {
     remember: false,
   });
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const validateForm = useCallback((data) => {
     if (!data.email || !data.password) {
@@ -44,6 +46,10 @@ const Login = () => {
       [name]: type === 'checkbox' ? checked : value,
     }));
     setErrorMessage('');
+  }, []);
+
+  const toggleShowPassword = useCallback(() => {
+    setShowPassword((prev) => !prev);
   }, []);
 
   const performLogin = useCallback(async () => {
@@ -120,15 +126,30 @@ const Login = () => {
                 Forget Password?
               </button>
             </div>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-              disabled={isLoading}
-              autoComplete="current-password"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 pr-10"
+                disabled={isLoading}
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                onClick={toggleShowPassword}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                disabled={isLoading}
+              >
+                {showPassword ? (
+                  <EyeSlashIcon className="h-5 w-5" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" />
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center space-x-2 text-sm">

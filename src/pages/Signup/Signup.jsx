@@ -4,6 +4,7 @@ import { debounce } from 'lodash';
 import LoginBg from '../../assets/loginandRegisterBg.png';
 import Logo from '/Logo.svg';
 import { useSignupMutation } from '../../redux/slices/apiSlice';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 const VALIDATION_ERRORS = {
   REQUIRED: 'Please fill in all fields',
@@ -14,7 +15,7 @@ const VALIDATION_ERRORS = {
 
 const Signup = () => {
   const navigate = useNavigate();
-  const [signup, { isLoading, error }] = useSignupMutation();
+  const [signup, { isLoading }] = useSignupMutation();
   const [formData, setFormData] = useState({
     email: '',
     username: '',
@@ -22,6 +23,7 @@ const Signup = () => {
   });
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const validateForm = useCallback((data) => {
     if (!data.email || !data.username || !data.password) {
@@ -52,27 +54,34 @@ const Signup = () => {
     setErrorMessage('');
   }, []);
 
-  const handleSignup = useCallback(
-    debounce(async () => {
-      const validationError = validateForm(formData);
-      if (validationError) {
-        setErrorMessage(validationError);
-        return;
-      }
-      try {
-        const payload = {
-          email: formData.email.trim(),
-          fullName: formData.username.trim(),
-          password: formData.password,
-        };
-        await signup(payload).unwrap();
-        navigate('/login', { replace: true });
-      } catch (err) {
-        setErrorMessage(err.data?.message || 'Signup failed. Please try again.');
-      }
-    }, 300),
-    [formData, termsAccepted, signup, navigate]
-  );
+  const toggleShowPassword = useCallback(() => {
+    setShowPassword((prev) => !prev);
+  }, []);
+
+  const performSignup = useCallback(async () => {
+    const validationError = validateForm(formData);
+    if (validationError) {
+      setErrorMessage(validationError);
+      console.error('Validation failed:', validationError);
+      return;
+    }
+    try {
+      const payload = {
+        email: formData.email.trim(),
+        fullName: formData.username.trim(),
+        password: formData.password,
+      };
+      await signup(payload).unwrap();
+      console.log('Signup successful');
+      navigate('/login', { replace: true });
+    } catch (err) {
+      const errorMsg = err.data?.message || 'Signup failed. Please try again.';
+      setErrorMessage(errorMsg);
+      console.error('Signup error:', err);
+    }
+  }, [formData, termsAccepted, signup, navigate]);
+
+  const handleSignup = debounce(performSignup, 300);
 
   return (
     <div
@@ -119,15 +128,30 @@ const Signup = () => {
 
           <div>
             <label className="text-sm text-gray-700">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-              disabled={isLoading}
-              autoComplete="new-password"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 pr-10"
+                disabled={isLoading}
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                onClick={toggleShowPassword}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                disabled={isLoading}
+              >
+                {showPassword ? (
+                  <EyeSlashIcon className="h-5 w-5" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" />
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center space-x-2 text-sm">
