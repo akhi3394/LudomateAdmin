@@ -1,0 +1,8 @@
+.Toastify__toast--success {
+  background: #4880FF !important;
+  color: white !important;
+}
+.Toastify__toast--error {
+  background: #FF4A68 !important;
+  color: white !important;
+}

@@ -3,11 +3,12 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './slices/authSlice';
 import { apiSlice } from './slices/apiSlice';
+import { userApiSlice } from './slices/userApiSlice';
 
 const persistConfig = {
   key: 'auth',
   storage,
-  whitelist: ['accessToken', 'user', 'isAuthenticated'], // Persist only these fields
+  whitelist: ['accessToken', 'user', 'isAuthenticated'],
 };
 
 const persistedReducer = persistReducer(persistConfig, authReducer);
@@ -16,18 +17,18 @@ export const store = configureStore({
   reducer: {
     auth: persistedReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
+    [userApiSlice.reducerPath]: userApiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'persist/PURGE'],
       },
-    }).concat(apiSlice.middleware),
+    }).concat(apiSlice.middleware, userApiSlice.middleware),
 });
 
 export const persistor = persistStore(store);
 
-// Function to clear persisted state on logout
 export const clearPersistedState = () => {
   try {
     persistor.purge();
@@ -37,7 +38,5 @@ export const clearPersistedState = () => {
   }
 };
 
-// Optional: For debugging in development
-window.store = store;
 
 export default store;
