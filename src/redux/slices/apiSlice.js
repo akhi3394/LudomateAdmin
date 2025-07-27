@@ -59,6 +59,24 @@ export const apiSlice = createApi({
     getEarningsStats: builder.query({
       query: () => '/admin/report/earnings-stats',
     }),
+    getNotifications: builder.query({
+      query: () => '/admin/notification',
+    }),
+    sendNotification: builder.mutation({
+      query: (body) => ({
+        url: '/admin/notification/send',
+        method: 'POST',
+        body,
+      }),
+    }),
+    updateNotificationStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: `/admin/notification/${id}/status`,
+        method: 'PATCH',
+        body: { status },
+      }),
+    }),
+
   }),
 });
 
@@ -72,5 +90,8 @@ export const {
   useGetSalesStatsQuery,
   useGetCustomerStatsQuery,
   useGetRevenueStatsQuery,
-  useGetEarningsStatsQuery
+  useGetEarningsStatsQuery,
+  useGetNotificationsQuery,
+  useSendNotificationMutation,
+  useUpdateNotificationStatusMutation
 } = apiSlice;
