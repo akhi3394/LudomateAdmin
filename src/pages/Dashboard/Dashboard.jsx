@@ -50,28 +50,32 @@ const Dashboard = () => {
       value: formatNumber(statsData?.data?.totalUsers || 0),
       trend: `${statsData?.data?.statsChange?.users?.percentage}% ${statsData?.data?.statsChange?.users?.since}`,
       color: getTrendColor(statsData?.data?.statsChange?.users?.percentage),
-      icon: '👤'
+      icon: '/DashboardUser.svg',
+      bg: '#8280FF'
     },
     {
       label: 'Total Player',
       value: formatNumber(statsData?.data?.totalPlayers || 0),
       trend: `${statsData?.data?.statsChange?.players?.percentage}% ${statsData?.data?.statsChange?.players?.since}`,
       color: getTrendColor(statsData?.data?.statsChange?.players?.percentage),
-      icon: '🎮'
+      icon: '/DashboardPlayer.svg',
+      bg: '#FEC53D'
     },
     {
       label: 'Total Sales',
       value: `$${formatNumber(statsData?.data?.totalSales || 0)}`,
       trend: `${statsData?.data?.statsChange?.sales?.percentage}% ${statsData?.data?.statsChange?.sales?.since}`,
       color: getTrendColor(statsData?.data?.statsChange?.sales?.percentage),
-      icon: '💰'
+      icon: '/DashboardSales.svg',
+        bg:'#4AD991'
     },
     {
       label: 'Total Matches',
       value: formatNumber(statsData?.data?.totalMatches || 0),
       trend: `${statsData?.data?.statsChange?.matches?.percentage}% ${statsData?.data?.statsChange?.matches?.since}`,
       color: getTrendColor(statsData?.data?.statsChange?.matches?.percentage),
-      icon: '⏱️'
+      icon: '/DashboardMatches.svg',
+        bg:'#8280FF'
     },
   ];
 
@@ -93,16 +97,19 @@ const Dashboard = () => {
   return (
     <div className="p-6 bg-[#f1f6fb] min-h-screen space-y-6">
       <h1 className='text-[28px] font-semibold'>Dashboard</h1>
-      
+
       {/* Header Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card, idx) => (
-          <div key={idx} className="bg-white p-4 rounded-xl shadow flex items-center space-x-4">
-            <div className="text-2xl">{card.icon}</div>
+          <div key={idx} className="bg-white p-4 rounded-xl shadow flex items-center justify-between space-x-4">
+
             <div>
               <div className="text-sm text-gray-500">{card.label}</div>
               <div className="text-xl font-semibold">{card.value}</div>
               <div className={`text-xs mt-1 ${card.color}`}>{card.trend}</div>
+            </div>
+            <div className="text-2xl ">
+              <img src={card.icon} alt="icons" className={`${card.bg}`}/>
             </div>
           </div>
         ))}
@@ -113,7 +120,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Sales Details</h2>
           <div className="flex space-x-2">
-            <select 
+            <select
               className="text-sm border px-2 py-1 rounded"
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
@@ -122,7 +129,7 @@ const Dashboard = () => {
                 <option key={month.value} value={month.value}>{month.label}</option>
               ))}
             </select>
-            <select 
+            <select
               className="text-sm border px-2 py-1 rounded"
               value={selectedYear}
               onChange={(e) => setSelectedYear(e.target.value)}
@@ -154,7 +161,7 @@ const Dashboard = () => {
       <div className="bg-white rounded-xl p-6 shadow">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Winner Details</h2>
-          <select 
+          <select
             className="text-sm border px-2 py-1 rounded"
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
@@ -194,10 +201,10 @@ const Dashboard = () => {
                   </td>
                 </tr>
               )) || (
-                <tr>
-                  <td colSpan="6" className="p-3 text-center">No winners data available</td>
-                </tr>
-              )}
+                  <tr>
+                    <td colSpan="6" className="p-3 text-center">No winners data available</td>
+                  </tr>
+                )}
             </tbody>
           </table>
         </div>

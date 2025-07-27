@@ -29,7 +29,7 @@ const ProfileDropdown = () => {
           className="flex items-center gap-2 w-[203px] h-[44px] cursor-pointer"
         >
           <img
-            src="/headericons/man.png"
+            src="/AdminProfile.svg"
             alt="Admin"
             className="w-[44px] h-[44px] rounded-full object-cover"
           />
