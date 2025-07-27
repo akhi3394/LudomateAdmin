@@ -35,7 +35,7 @@ const NotificationDropdown = () => {
               <div className="flex items-start gap-3 cursor-pointer" onClick={handleSettingsClick}>
                 <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center"
                   style={{ background: "linear-gradient(180deg, #4E96FF 0%, #80C9FC 100%)" }}>
-                  <img src="/headericons/settings.svg" alt="Settings" className="w-[13px] h-[16px]" />
+                  <img src="/NotificationSetting.svg" alt="Settings" className="w-[13px] h-[16px]" />
                 </div>
                 <div>
                   <p className="text-black text-[14px] font-semibold">Settings</p>
@@ -47,7 +47,7 @@ const NotificationDropdown = () => {
               <div className="flex items-start gap-3 cursor-pointer" onClick={handleMailClick}>
                 <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center"
                   style={{ background: "linear-gradient(180deg, #F97FD9 0%, #FFC1E6 100%)" }}>
-                  <img src="/headericons/eventupdate.svg" alt="Event" className="w-[13px] h-[16px]" />
+                  <img src="/NotificationEvent.svg" alt="Event" className="w-[13px] h-[16px]" />
                 </div>
                 <div>
                   <p className="text-[#D53C94] text-[14px] font-semibold">Event Update</p>
@@ -59,7 +59,7 @@ const NotificationDropdown = () => {
               <div className="flex items-start gap-3 cursor-pointer" onClick={handleMailClick}>
                 <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center"
                   style={{ background: "linear-gradient(180deg, #9E8FFF 0%, #EBCBFF 100%)" }}>
-                  <img src="/headericons/profile.svg" alt="Profile" className="w-[13px] h-[16px]" />
+                  <img src="/NotificationProfle.svg" alt="Profile" className="w-[13px] h-[16px]" />
                 </div>
                 <div>
                   <p className="text-[#7551F8] text-[14px] font-semibold">Profile</p>
@@ -71,7 +71,7 @@ const NotificationDropdown = () => {
               <div className="flex items-start gap-3 cursor-pointer" onClick={handleTransactionClick}>
                 <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center"
                   style={{ background: "linear-gradient(180deg, #FF8F8F 0%, #FFC1C1 100%)" }}>
-                  <img src="/headericons/applicationerror.svg" alt="Error" className="w-[13px] h-[16px]" />
+                  <img src="/NotificationError.svg" alt="Error" className="w-[13px] h-[16px]" />
                 </div>
                 <div>
                   <p className="text-[#F14C4C] text-[14px] font-semibold">Application Error</p>

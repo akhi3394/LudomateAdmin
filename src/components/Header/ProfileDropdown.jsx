@@ -49,7 +49,7 @@ const ProfileDropdown = () => {
               }}
             >
               <img
-                src="/headericons/manageaccount.svg"
+                src="/ProfileManage.svg"
                 alt="Manage"
                 className="w-[18px] h-[18px]"
               />
@@ -61,7 +61,7 @@ const ProfileDropdown = () => {
               onClick={handleResetOpen}
             >
               <img
-                src="/headericons/changepassword.svg"
+                src="/ProfileChangePassword.svg"
                 alt="Change Password"
                 className="w-[18px] h-[18px]"
               />
@@ -76,7 +76,7 @@ const ProfileDropdown = () => {
               }}
             >
               <img
-                src="/headericons/activitylog.svg"
+                src="/profileActivity.svg"
                 alt="Activity Log"
                 className="w-[18px] h-[18px]"
               />
@@ -91,7 +91,7 @@ const ProfileDropdown = () => {
               }}
             >
               <img
-                src="/headericons/logout.svg"
+                src="/ProfileLogout.svg"
                 alt="Logout"
                 className="w-[18px] h-[18px]"
               />
