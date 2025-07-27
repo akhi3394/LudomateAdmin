@@ -1,31 +1,102 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
-
-const salesData = Array.from({ length: 30 }, (_, i) => ({
-  name: `${(i + 1) * 2}k`,
-  value: Math.floor(30 + Math.random() * 70)
-}));
+import { useGetDashboardStatsQuery, useGetMonthlySalesQuery, useGetWinnersQuery } from '../../redux/slices/apiSlice';
 
 const statusStyles = {
   Delivered: 'bg-green-100 text-green-600',
   Sent: 'bg-yellow-100 text-yellow-600',
   Received: 'bg-blue-100 text-blue-600',
+  COMPLETE: 'bg-green-100 text-green-600',
 };
 
 const Dashboard = () => {
+  const [selectedMonth, setSelectedMonth] = useState('6'); // Default to June
+  const [selectedYear, setSelectedYear] = useState('2025');
+
+  const { data: statsData, isLoading: statsLoading, error: statsError } = useGetDashboardStatsQuery();
+  const { data: salesData, isLoading: salesLoading, error: salesError } = useGetMonthlySalesQuery({
+    year: selectedYear,
+    month: selectedMonth
+  });
+  const { data: winnersData, isLoading: winnersLoading, error: winnersError } = useGetWinnersQuery();
+
+  const formatNumber = (num) => {
+    return new Intl.NumberFormat('en-US').format(num);
+  };
+
+  const getTrendColor = (percentage) => {
+    return percentage >= 0 ? 'text-green-500' : 'text-red-500';
+  };
+
+  if (statsLoading || salesLoading || winnersLoading) {
+    return <div className="p-6 bg-[#f1f6fb] min-h-screen">Loading...</div>;
+  }
+
+  if (statsError || salesError || winnersError) {
+    return (
+      <div className="p-6 bg-[#f1f6fb] min-h-screen">
+        <div className="bg-red-100 text-red-600 p-4 rounded-xl">
+          Error: {statsError?.data?.message || salesError?.data?.message || winnersError?.data?.message || 'Failed to load dashboard data'}
+        </div>
+      </div>
+    );
+  }
+
+  const cards = [
+    {
+      label: 'Total User',
+      value: formatNumber(statsData?.data?.totalUsers || 0),
+      trend: `${statsData?.data?.statsChange?.users?.percentage}% ${statsData?.data?.statsChange?.users?.since}`,
+      color: getTrendColor(statsData?.data?.statsChange?.users?.percentage),
+      icon: '👤'
+    },
+    {
+      label: 'Total Player',
+      value: formatNumber(statsData?.data?.totalPlayers || 0),
+      trend: `${statsData?.data?.statsChange?.players?.percentage}% ${statsData?.data?.statsChange?.players?.since}`,
+      color: getTrendColor(statsData?.data?.statsChange?.players?.percentage),
+      icon: '🎮'
+    },
+    {
+      label: 'Total Sales',
+      value: `$${formatNumber(statsData?.data?.totalSales || 0)}`,
+      trend: `${statsData?.data?.statsChange?.sales?.percentage}% ${statsData?.data?.statsChange?.sales?.since}`,
+      color: getTrendColor(statsData?.data?.statsChange?.sales?.percentage),
+      icon: '💰'
+    },
+    {
+      label: 'Total Matches',
+      value: formatNumber(statsData?.data?.totalMatches || 0),
+      trend: `${statsData?.data?.statsChange?.matches?.percentage}% ${statsData?.data?.statsChange?.matches?.since}`,
+      color: getTrendColor(statsData?.data?.statsChange?.matches?.percentage),
+      icon: '⏱️'
+    },
+  ];
+
+  const months = [
+    { value: '1', label: 'January' },
+    { value: '2', label: 'February' },
+    { value: '3', label: 'March' },
+    { value: '4', label: 'April' },
+    { value: '5', label: 'May' },
+    { value: '6', label: 'June' },
+    { value: '7', label: 'July' },
+    { value: '8', label: 'August' },
+    { value: '9', label: 'September' },
+    { value: '10', label: 'October' },
+    { value: '11', label: 'November' },
+    { value: '12', label: 'December' },
+  ];
+
   return (
     <div className="p-6 bg-[#f1f6fb] min-h-screen space-y-6">
       <h1 className='text-[28px] font-semibold'>Dashboard</h1>
+      
       {/* Header Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { label: 'Total User', value: '40,689', trend: '+8.5% Up from yesterday', color: 'text-green-500', icon: '👤' },
-          { label: 'Total Player', value: '10,293', trend: '1.3% Up from past week', color: 'text-green-500', icon: '🎮' },
-          { label: 'Total Sales', value: '$89,000', trend: '4.3% Down from yesterday', color: 'text-red-500', icon: '💰' },
-          { label: 'Total Matches', value: '2040', trend: '1.8% Up from yesterday', color: 'text-green-500', icon: '⏱️' },
-        ].map((card, idx) => (
+        {cards.map((card, idx) => (
           <div key={idx} className="bg-white p-4 rounded-xl shadow flex items-center space-x-4">
             <div className="text-2xl">{card.icon}</div>
             <div>
@@ -41,12 +112,29 @@ const Dashboard = () => {
       <div className="bg-white rounded-xl p-6 shadow">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Sales Details</h2>
-          <select className="text-sm border px-2 py-1 rounded">
-            <option>October</option>
-          </select>
+          <div className="flex space-x-2">
+            <select 
+              className="text-sm border px-2 py-1 rounded"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+            >
+              {months.map(month => (
+                <option key={month.value} value={month.value}>{month.label}</option>
+              ))}
+            </select>
+            <select 
+              className="text-sm border px-2 py-1 rounded"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+            >
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+            </select>
+          </div>
         </div>
         <ResponsiveContainer width="100%" height={250}>
-          <LineChart data={salesData}>
+          <LineChart data={salesData?.data?.map(item => ({ name: `Day ${item.day}`, value: item.total })) || []}>
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
@@ -66,8 +154,14 @@ const Dashboard = () => {
       <div className="bg-white rounded-xl p-6 shadow">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Winner Details</h2>
-          <select className="text-sm border px-2 py-1 rounded">
-            <option>October</option>
+          <select 
+            className="text-sm border px-2 py-1 rounded"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+          >
+            {months.map(month => (
+              <option key={month.value} value={month.value}>{month.label}</option>
+            ))}
           </select>
         </div>
         <div className="overflow-x-auto">
@@ -83,27 +177,27 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {[
-                { name: 'Suresh Wardha', location: 'India', event: 'Get profile on top', level: '1st', price: '1000 Coins', status: 'Delivered' },
-                { name: 'Arush Mehra', location: 'India', event: 'Get profile on top', level: '2nd', price: '500 Coins', status: 'Sent' },
-                { name: 'Sindhya Shastri', location: 'India', event: 'Get profile on top', level: '3rd', price: '100 Coins', status: 'Received' },
-              ].map((winner, idx) => (
-                <tr key={idx} className="border-t">
+              {winnersData?.data?.map((winner, idx) => (
+                <tr key={winner._id} className="border-t">
                   <td className="p-3 flex items-center space-x-2">
                     <div className="w-8 h-8 rounded-full bg-gray-300" />
-                    <span>{winner.name}</span>
+                    <span>{`${winner.winner.firstName} ${winner.winner.lastName}`.trim()}</span>
                   </td>
-                  <td className="p-3">{winner.location}</td>
-                  <td className="p-3">{winner.event}</td>
-                  <td className="p-3">{winner.level}</td>
-                  <td className="p-3">{winner.price}</td>
+                  <td className="p-3">Unknown</td>
+                  <td className="p-3">{winner.contestId}</td>
+                  <td className="p-3">1st</td>
+                  <td className="p-3">{winner.firstPrize} Coins</td>
                   <td className="p-3">
                     <span className={`px-3 py-1 text-xs rounded-full font-medium ${statusStyles[winner.status]}`}>
                       {winner.status}
                     </span>
                   </td>
                 </tr>
-              ))}
+              )) || (
+                <tr>
+                  <td colSpan="6" className="p-3 text-center">No winners data available</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

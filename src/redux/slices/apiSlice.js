@@ -35,7 +35,26 @@ export const apiSlice = createApi({
         body: userData,
       }),
     }),
+    getDashboardStats: builder.query({
+      query: () => '/admin/dashboard/stats',
+    }),
+    getMonthlySales: builder.query({
+      query: ({ year, month }) => `/admin/dashboard/sales?year=${year}&month=${month}`,
+    }),
+    getWinners: builder.query({
+      query: () => '/admin/dashboard/winners',
+    }),
+     getAllCoins: builder.query({
+      query: () => '/user/Coin/allCoin',
+    }),
   }),
 });
 
-export const { useLoginMutation, useSignupMutation } = apiSlice;
+export const {
+  useLoginMutation,
+  useSignupMutation,
+  useGetDashboardStatsQuery,
+  useGetMonthlySalesQuery,
+  useGetWinnersQuery,
+  useGetAllCoinsQuery
+} = apiSlice;
