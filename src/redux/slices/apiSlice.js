@@ -44,8 +44,20 @@ export const apiSlice = createApi({
     getWinners: builder.query({
       query: () => '/admin/dashboard/winners',
     }),
-     getAllCoins: builder.query({
+    getAllCoins: builder.query({
       query: () => '/user/Coin/allCoin',
+    }),
+    getSalesStats: builder.query({
+      query: ({ mode, year }) => `/admin/report/sales-stats?mode=${mode}&year=${year}`,
+    }),
+    getCustomerStats: builder.query({
+      query: () => '/admin/report/customer-stats',
+    }),
+    getRevenueStats: builder.query({
+      query: () => '/admin/report/revenue-stats',
+    }),
+    getEarningsStats: builder.query({
+      query: () => '/admin/report/earnings-stats',
     }),
   }),
 });
@@ -56,5 +68,9 @@ export const {
   useGetDashboardStatsQuery,
   useGetMonthlySalesQuery,
   useGetWinnersQuery,
-  useGetAllCoinsQuery
+  useGetAllCoinsQuery,
+  useGetSalesStatsQuery,
+  useGetCustomerStatsQuery,
+  useGetRevenueStatsQuery,
+  useGetEarningsStatsQuery
 } = apiSlice;
