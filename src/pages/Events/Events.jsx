@@ -8,9 +8,10 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
-  Legend
+  Legend,
 } from 'recharts';
 import { FiEdit } from 'react-icons/fi';
+import { useGetAllContestQuery, useAddContestMutation } from '../../redux/slices/apiSlice';
 
 const barData = [
   { year: '2024', earningA: 40, earningB: 24 },
@@ -30,12 +31,40 @@ const lineData = [
 
 const Events = () => {
   const [showModal, setShowModal] = useState(false);
+  const { data: contests, isLoading, error, refetch } = useGetAllContestQuery();
+  const [addContest, { isLoading: isAdding }] = useAddContestMutation();
+  const [formData, setFormData] = useState({
+    firstPrize: '',
+    entryFee: '',
+    noOfuser: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await addContest(formData).unwrap();
+      setShowModal(false);
+      setFormData({ firstPrize: '', entryFee: '', noOfuser: '' });
+      refetch();
+    } catch (err) {
+      console.error('Failed to add contest:', err);
+    }
+  };
+
+  const isFormValid = formData.firstPrize && formData.entryFee && formData.noOfuser;
 
   return (
     <div className="p-6 bg-[#f5f9ff] min-h-screen">
       <h1 className="text-xl font-semibold mb-4">Event Management</h1>
 
-      <div className="bg-white p-4 rounded-xl shadow-sm">
+      {/* <div className="bg-white p-4 rounded-xl shadow-sm">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium">Live Events</h2>
           <button
@@ -74,9 +103,59 @@ const Events = () => {
             </div>
           ))}
         </div>
+      </div> */}
+
+      <div className="bg-white p-4 rounded-xl shadow-sm mt-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-medium">Contest History</h2>
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-[#4b7bec] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#3b6ed6] transition"
+          >
+            Create Contest
+          </button>
+        </div>
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>Error: {error.message}</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left text-gray-500">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                  <th className="px-4 py-2">Contest ID</th>
+                  <th className="px-4 py-2">Users</th>
+                  <th className="px-4 py-2">First Prize (₹)</th>
+                  <th className="px-4 py-2">Entry Fee (₹)</th>
+                  <th className="px-4 py-2">No. of Users</th>
+                  <th className="px-4 py-2">Joined</th>
+                  <th className="px-4 py-2">Status</th>
+                  <th className="px-4 py-2">Winner</th>
+                  <th className="px-4 py-2">Created At</th>
+                </tr>
+              </thead>
+              <tbody>
+                {contests?.data?.map((contest) => (
+                  <tr key={contest._id} className="bg-white border-b hover:bg-gray-50">
+                    <td className="px-4 py-2">{contest.contestId}</td>
+                    <td className="px-4 py-2">{contest.users.map(user => user.firstName).join(', ') || 'N/A'}</td>
+                    <td className="px-4 py-2">{contest.firstPrize}</td>
+                    <td className="px-4 py-2">{contest.entryFee}</td>
+                    <td className="px-4 py-2">{contest.noOfuser}</td>
+                    <td className="px-4 py-2">{contest.joined}</td>
+                    <td className="px-4 py-2">{contest.status}</td>
+                    <td className="px-4 py-2">{contest.winner?.firstName || 'N/A'}</td>
+                    <td className="px-4 py-2">{new Date(contest.createdAt).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
         <div className="bg-white p-4 rounded-xl shadow-sm">
           <h3 className="text-sm font-medium mb-2">Customers</h3>
           <div className="flex flex-col items-center justify-center">
@@ -122,7 +201,7 @@ const Events = () => {
             </LineChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </div> */}
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
@@ -133,21 +212,49 @@ const Events = () => {
             >
               &times;
             </button>
-            <div className="flex flex-col items-center mb-6">
-              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                <span className="text-xl">📷</span>
+            <h2 className="text-lg font-medium mb-4">Create New Contest</h2>
+            <div className="grid grid-cols-1 gap-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">First Prize (₹)*</label>
+                <input
+                  type="number"
+                  name="firstPrize"
+                  value={formData.firstPrize}
+                  onChange={handleChange}
+                  className="mt-1 p-2 w-full border rounded-lg text-sm"
+                  placeholder="Enter first prize"
+                />
               </div>
-              <p className="text-sm text-blue-500 mt-2 cursor-pointer">Upload Cover Photo</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              <input type="text" placeholder="Enter event name" className="border rounded-lg px-4 py-2 text-sm" />
-              <input type="text" placeholder="1234 BDT" className="border rounded-lg px-4 py-2 text-sm" />
-              <input type="date" className="border rounded-lg px-4 py-2 text-sm" />
-              <input type="text" placeholder="Address" className="border rounded-lg px-4 py-2 text-sm" />
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Entry Fee (₹)*</label>
+                <input
+                  type="number"
+                  name="entryFee"
+                  value={formData.entryFee}
+                  onChange={handleChange}
+                  className="mt-1 p-2 w-full border rounded-lg text-sm"
+                  placeholder="Enter entry fee"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">No. of Users*</label>
+                <input
+                  type="number"
+                  name="noOfuser"
+                  value={formData.noOfuser}
+                  onChange={handleChange}
+                  className="mt-1 p-2 w-full border rounded-lg text-sm"
+                  placeholder="Enter number of users"
+                />
+              </div>
             </div>
             <div className="text-center">
-              <button className="bg-[#4b7bec] text-white px-6 py-2 rounded-lg hover:bg-[#3b6ed6] transition">
-                Save
+              <button
+                onClick={handleSubmit}
+                disabled={!isFormValid || isAdding}
+                className={`bg-[#4b7bec] text-white px-6 py-2 rounded-lg hover:bg-[#3b6ed6] transition ${(!isFormValid || isAdding) ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                {isAdding ? 'Creating...' : 'Submit'}
               </button>
             </div>
           </div>

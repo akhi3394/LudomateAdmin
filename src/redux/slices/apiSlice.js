@@ -93,7 +93,18 @@ export const apiSlice = createApi({
     }),
     getSalesStats: builder.query({
       query: ({ mode, year }) => `/admin/report/sales-stats?mode=${mode}&year=${year}`,
-    })
+    }),
+    getAllContest: builder.query({
+      query: () => '/admin/allContest',
+    }),
+    addContest: builder.mutation({
+      query: (body) => ({
+        url: '/admin/AddContest',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Contest'],
+    }),
   }),
 });
 
@@ -116,5 +127,6 @@ export const {
   useGetAllDiceQuery,
   useGetBonusStatsQuery,
   useGetMostPurchasedDiceQuery,
-
+  useGetAllContestQuery,
+  useAddContestMutation
 } = apiSlice;
