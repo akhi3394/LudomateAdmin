@@ -1,6 +1,10 @@
-import React from 'react'
+import React from 'react';
+import { useGetAllBoardsQuery, useGetAllAvatarsQuery } from '../../redux/slices/apiSlice';
 
 const Customization = () => {
+  const { data: boardsData, isLoading: isBoardsLoading, error: boardsError } = useGetAllBoardsQuery();
+  const { data: avatarsData, isLoading: isAvatarsLoading, error: avatarsError } = useGetAllAvatarsQuery();
+
   return (
     <div className="p-6 bg-[#F3F7FD] min-h-screen font-roboto">
       <h2 className="text-lg font-semibold text-[#1B1E25] mb-6">App Theme Customization</h2>
@@ -27,24 +31,35 @@ const Customization = () => {
       {/* Default Board Selection */}
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <h3 className="text-sm font-medium text-[#1B1E25] mb-4">Set Default Board</h3>
-        <div className="flex justify-between items-center gap-4 overflow-x-auto">
-          {[1, 2, 3, 4].map((style, idx) => (
-            <div key={style} className="flex flex-col items-center gap-2">
-              <img
-                src={`https://via.placeholder.com/90x90.png?text=Style+${style}`}
-                alt={`Style ${style}`}
-                className="w-[90px] h-[90px] rounded-lg border border-gray-300"
-              />
-              <div className="text-sm font-medium text-[#1B1E25]">Style {style}</div>
-              <div className="w-4 h-4 rounded-full border border-gray-400 flex items-center justify-center">
-                {style === 1 ? (
-                  <div className="w-2.5 h-2.5 bg-green-500 rounded-full" />
-                ) : null}
+        {isBoardsLoading ? (
+          <div>Loading boards...</div>
+        ) : boardsError ? (
+          <div>Error loading boards: {boardsError.message}</div>
+        ) : (
+          <div className="flex justify-between items-center gap-4 overflow-x-auto">
+            {boardsData?.data?.map((board, idx) => (
+              <div key={board._id} className="flex flex-col items-center gap-2">
+                <div className="p-[2px] rounded-xl bg-gradient-to-br from-[#FAC619] via-[#D45A0C] to-[#D45A0C]">
+                  <div className="bg-gradient-to-br from-[#8E0DB0] to-[#3C0264] rounded-xl p-4 flex flex-col items-center">
+                    <img
+                      src={board.image}
+                      alt={board.name}
+                      className="w-20 h-20 object-contain mb-2"
+                    />
+                  </div>
+                </div>
+                <div className="text-sm font-medium text-[#1B1E25]">{board.name}</div>
+                <div className="w-4 h-4 rounded-full border border-gray-400 flex items-center justify-center">
+                  {idx === 0 ? (
+                    <div className="w-2.5 h-2.5 bg-green-500 rounded-full" />
+                  ) : null}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
+
       {/* Ads Section */}
       <div className="bg-white p-6 rounded-lg shadow-sm mt-8">
         <div className="flex justify-between items-center mb-4">
@@ -101,48 +116,48 @@ const Customization = () => {
       {/* Avatar Section */}
       <div className="bg-white p-6 rounded-lg shadow-sm mt-8">
         <h3 className="text-sm font-medium text-[#1B1E25] mb-4">Avatar</h3>
-        <div className="flex items-end gap-4 overflow-x-auto">
-          {[
-            'https://via.placeholder.com/60x60.png?text=1',
-            'https://via.placeholder.com/60x60.png?text=2',
-            'https://via.placeholder.com/60x60.png?text=3',
-            'https://via.placeholder.com/60x60.png?text=4',
-            'https://via.placeholder.com/60x60.png?text=5',
-            'https://via.placeholder.com/60x60.png?text=6',
-            'https://via.placeholder.com/60x60.png?text=7',
-            'https://via.placeholder.com/60x60.png?text=8',
-          ].map((img, idx) => (
-            <div key={idx} className="flex flex-col items-center gap-1">
-              <div className="w-[64px] h-[64px] rounded-lg border-4 border-purple-600 overflow-hidden">
-                <img
-                  src={img}
-                  alt={`Avatar ${idx + 1}`}
-                  className="w-full h-full object-cover"
-                />
+        {isAvatarsLoading ? (
+          <div>Loading avatars...</div>
+        ) : avatarsError ? (
+          <div>Error loading avatars: {avatarsError.message}</div>
+        ) : (
+          <div className="flex items-end gap-4 overflow-x-auto">
+            {avatarsData?.data?.map((avatar, idx) => (
+              <div key={avatar._id} className="flex flex-col items-center gap-1">
+                {avatar.default && (
+                  <span className="text-[14px] text-[#979797]  px-2 py-1 rounded">Default</span>
+                )}
+                <div className="p-[2px] rounded-xl bg-gradient-to-br from-[#FAC619] via-[#D45A0C] to-[#D45A0C]">
+                  <div className="bg-gradient-to-br from-[#8E0DB0] to-[#3C0264] rounded-xl p-2 flex flex-col items-center">
+                    <img
+                      src={avatar.image}
+                      alt={avatar.name}
+                      className="w-[95px] h-[112px] object-cover rounded"
+                    />
+                  </div>
+                </div>
+
+                <button className="text-xs bg-[#E2EAF8]  px-1.5 py-1 rounded-full flex items-center w-[32px] h-[32px]">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_346_886)">
+                      <path d="M15.8927 15.8935C16.3075 15.8935 16.7052 15.7287 16.9985 15.4355C17.2918 15.1422 17.4565 14.7444 17.4565 14.3297V6.51061C17.4565 6.09586 17.2918 5.6981 16.9985 5.40483C16.7052 5.11156 16.3075 4.9468 15.8927 4.9468H9.71563C9.45409 4.94936 9.19609 4.88629 8.96523 4.76335C8.73438 4.64041 8.53804 4.46153 8.3942 4.24308L7.76086 3.30479C7.61847 3.08857 7.42462 2.91108 7.19671 2.78826C6.96881 2.66544 6.71397 2.60112 6.45507 2.60107H3.38218C2.96743 2.60107 2.56966 2.76583 2.27639 3.05911C1.98312 3.35238 1.81836 3.75014 1.81836 4.16489V14.3297C1.81836 14.7444 1.98312 15.1422 2.27639 15.4355C2.56966 15.7287 2.96743 15.8935 3.38218 15.8935H15.8927Z" stroke="#4880FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                      <path d="M9.6377 8.07446V12.7659" stroke="#4880FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                      <path d="M7.29199 10.4202L9.63772 8.07446L11.9834 10.4202" stroke="#4880FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_346_886">
+                        <rect width="18.7658" height="18.7658" fill="white" transform="translate(0.254883 0.255371)" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </button>
               </div>
-              <button className="text-xs bg-[#E0E7FF] text-blue-600 px-1.5 py-1 rounded">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              </button>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default Customization
+export default Customization;

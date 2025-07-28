@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useGetAllBoardsQuery } from '../../redux/slices/apiSlice';
 
 const categories = {
   teamModes: [
@@ -14,16 +15,11 @@ const categories = {
     { title: 'Local', image: '/dummy.png' },
     { title: 'Computer', image: '/dummy.png' },
   ],
-  boards: [
-    { title: 'Style 1', image: '/dummy.png' },
-    { title: 'Style 2', image: '/dummy.png' },
-    { title: 'Style 3', image: '/dummy.png' },
-    { title: 'Style 4', image: '/dummy.png' },
-  ],
 };
 
 const GameManagement = () => {
   const [toggles, setToggles] = useState({});
+  const { data: boardsData, isLoading, error } = useGetAllBoardsQuery();
 
   const handleToggle = (section, idx) => {
     setToggles((prev) => ({
@@ -36,7 +32,7 @@ const GameManagement = () => {
     <div className="p-4 md:p-6 bg-[#EAF1F8] min-h-screen w-full">
       <h1 className="text-2xl font-semibold mb-6 text-[#1A1A1A]">Game Management</h1>
 
-      {/* Reusable Section */}
+      {/* Reusable Section for Team Modes */}
       <Section
         title="Control Game Team Modes"
         items={categories.teamModes}
@@ -63,14 +59,24 @@ const GameManagement = () => {
         showImage
       />
 
-      <Section
-        title="Control Game Boards"
-        items={categories.boards}
-        sectionKey="boards"
-        toggles={toggles}
-        handleToggle={handleToggle}
-        showImage
-      />
+      {/* Boards Section with API data */}
+      {isLoading ? (
+        <div>Loading boards...</div>
+      ) : error ? (
+        <div>Error loading boards: {error.message}</div>
+      ) : (
+        <Section
+          title="Control Game Boards"
+          items={boardsData?.data?.map(board => ({
+            title: board.name,
+            image: board.image
+          })) || []}
+          sectionKey="boards"
+          toggles={toggles}
+          handleToggle={handleToggle}
+          showImage
+        />
+      )}
 
       {/* Terms & Conditions and Rules */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -87,13 +93,18 @@ const Section = ({ title, items, sectionKey, toggles, handleToggle, showImage })
       <h2 className="font-semibold mb-4 text-[#1A1A1A]">{title}</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {items.map((item, idx) => (
-          <div key={idx} className="flex flex-col items-center  rounded-lg p-4">
+          <div key={idx} className="flex flex-col items-center rounded-lg p-4">
             {showImage && (
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-20 h-20 object-contain mb-2"
-              />
+              <div className="p-[2px] rounded-xl bg-gradient-to-br from-[#FAC619] via-[#D45A0C] to-[#D45A0C]">
+                <div className="bg-gradient-to-br from-[#8E0DB0] to-[#3C0264] rounded-xl p-4 flex flex-col items-center">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-20 h-20 object-contain mb-2"
+                  />
+                </div>
+              </div>
+
             )}
             <span className="text-sm font-medium mb-2">{item.title}</span>
             <Toggle

@@ -76,7 +76,12 @@ export const apiSlice = createApi({
         body: { status },
       }),
     }),
-
+    getAllBoards: builder.query({
+      query: () => '/admin/Board/allBoard',
+    }),
+    getAllAvatars: builder.query({
+      query: () => '/admin/Avatar/allAvatar',
+    }),
   }),
 });
 
@@ -93,5 +98,7 @@ export const {
   useGetEarningsStatsQuery,
   useGetNotificationsQuery,
   useSendNotificationMutation,
-  useUpdateNotificationStatusMutation
+  useUpdateNotificationStatusMutation,
+  useGetAllBoardsQuery,
+  useGetAllAvatarsQuery
 } = apiSlice;
