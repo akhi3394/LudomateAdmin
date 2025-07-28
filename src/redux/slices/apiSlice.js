@@ -82,6 +82,9 @@ export const apiSlice = createApi({
     getAllAvatars: builder.query({
       query: () => '/admin/Avatar/allAvatar',
     }),
+    getAllDice: builder.query({
+      query: () => '/admin/Dice/allDice',
+    }),
   }),
 });
 
@@ -100,5 +103,7 @@ export const {
   useSendNotificationMutation,
   useUpdateNotificationStatusMutation,
   useGetAllBoardsQuery,
-  useGetAllAvatarsQuery
+  useGetAllAvatarsQuery,
+  useGetAllDiceQuery,
+
 } = apiSlice;

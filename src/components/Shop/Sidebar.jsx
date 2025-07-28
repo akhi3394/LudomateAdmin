@@ -10,7 +10,7 @@ const Sidebar = () => {
         }`;
 
     return (
-        <div className="w-[260px] h-[500px] fixed top-[110px] p-5 ml-5 bg-white rounded-2xl shadow-sm">
+        <div className="w-[260px] h-[500px] fixed top-[135px] p-5 ml-5 bg-white rounded-2xl shadow-sm">
             <button className="w-full bg-[#3772FF] text-white py-2 rounded-lg text-sm font-medium mb-6">
                 + Add New Product
             </button>

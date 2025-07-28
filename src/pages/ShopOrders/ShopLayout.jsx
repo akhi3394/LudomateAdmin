@@ -9,7 +9,7 @@ const ShopLayout = ({ children }) => {
 
       {/* Scrollable content area */}
       <div className="flex-1 overflow-y-auto p-3 relative left-[280px] ">
-        <div className="bg-white p-6 rounded-lg shadow-sm min-h-full">
+        <div className=" p-6 rounded-lg  min-h-full">
           {children}
         </div>
       </div>
