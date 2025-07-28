@@ -85,6 +85,15 @@ export const apiSlice = createApi({
     getAllDice: builder.query({
       query: () => '/admin/Dice/allDice',
     }),
+    getBonusStats: builder.query({
+      query: () => '/admin/bonus/stats',
+    }),
+    getMostPurchasedDice: builder.query({
+      query: () => '/admin/bonus/most-purchased-dice',
+    }),
+    getSalesStats: builder.query({
+      query: ({ mode, year }) => `/admin/report/sales-stats?mode=${mode}&year=${year}`,
+    })
   }),
 });
 
@@ -105,5 +114,7 @@ export const {
   useGetAllBoardsQuery,
   useGetAllAvatarsQuery,
   useGetAllDiceQuery,
+  useGetBonusStatsQuery,
+  useGetMostPurchasedDiceQuery,
 
 } = apiSlice;

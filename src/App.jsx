@@ -21,6 +21,7 @@ import Products from './pages/ShopOrders/Products';
 import Analytics from './components/Shop/Analytics';
 import store from './redux/store';
 import { useSelector } from 'react-redux';
+import Earning from './components/Shop/Earning';
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -52,6 +53,7 @@ function App() {
                   <Route index element={<Navigate to="products" />} />
                   <Route path="products" element={<Products />} />
                   <Route path="analytics" element={<Analytics />} />
+                  <Route path="earning" element={<Earning />} />
                 </Route>
                 <Route path="/push-notification" element={<PushNotification />} />
                 <Route path="/events" element={<Events />} />

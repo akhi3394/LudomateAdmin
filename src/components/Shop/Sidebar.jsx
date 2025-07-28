@@ -33,13 +33,13 @@ const Sidebar = () => {
                     </div>
                 </NavLink>
 
-                <div className="flex items-center justify-between px-3 py-2 text-sm text-[#1B1E25] hover:bg-[#F5F8FC] rounded-lg cursor-pointer">
+                <NavLink to="/shop-orders/earning" className={linkStyle}>
                     <div className="flex items-center gap-2">
                         <FiSend className="w-4 h-4" />
                         Earning
                     </div>
                     <span className="text-[#667085] text-xs font-medium">24,532</span>
-                </div>
+                </NavLink>
 
                 <div className="flex items-center justify-between px-3 py-2 text-sm text-[#1B1E25] hover:bg-[#F5F8FC] rounded-lg cursor-pointer">
                     <div className="flex items-center gap-2">
