@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaEdit } from 'react-icons/fa';
 import {
   BarChart,
@@ -8,8 +8,14 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  PieChart,
+  Pie,
+  LineChart,
+  Line,
+  Cell,
 } from 'recharts';
-import { useGetAllCoinsQuery } from '../../redux/slices/apiSlice';
+import { useGetAllCoinsQuery, useGetCustomerStatsQuery, useGetEarningsStatsQuery, useGetMostPurchasedDiceQuery, useGetRevenueStatsQuery, useGetSalesStatsQuery } from '../../redux/slices/apiSlice';
+const COLORS = ['#3B82F6', '#A5B4FC']
 
 const salesData = [
   { name: 'Mon', sales: 30 },
@@ -22,7 +28,15 @@ const salesData = [
 ];
 
 const Bonus = () => {
+    const [selectedYear, setSelectedYear] = useState('2025')
+    const { data: salesStats, isLoading: salesLoading, error: salesError } = useGetSalesStatsQuery({ mode: 'monthly', year: 2025 })
   const { data: coinsData, isLoading, error } = useGetAllCoinsQuery();
+  const { data: customerStats, isLoading: customerLoading, error: customerError } = useGetCustomerStatsQuery()
+  const { data: revenueStats, isLoading: revenueLoading, error: revenueError } = useGetRevenueStatsQuery()
+  const { data: earningsStats, isLoading: earningsLoading, error: earningsError } = useGetEarningsStatsQuery()
+  const { data: mostPurchasedDice, isLoading: isDiceLoading, error: diceError } = useGetMostPurchasedDiceQuery();
+
+
 
   if (isLoading) return <div className="p-6 bg-[#EDF3F9] min-h-screen">Loading...</div>;
   if (error) return <div className="p-6 bg-[#EDF3F9] min-h-screen">Error loading data</div>;
@@ -37,6 +51,32 @@ const Bonus = () => {
       default: item.default
     })) || []
   ].filter(item => item.name !== 'Daily Bonus');
+
+
+const months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ]
+  const salesData = salesStats?.data?.map(item => ({
+    name: months[item.month - 1],
+    value: item.total
+  })) || []
+
+  const pieData = [
+    { name: 'New', value: customerStats?.data?.newUsers || 0 },
+    { name: 'Repeated', value: customerStats?.data?.repeatedUsers || 0 }
+  ]
+
+  const revenueData = revenueStats?.data?.map(item => ({
+    name: `Day ${item.day}`,
+    Sales: item.sales,
+    Profit: item.profit
+  })) || []
+
+  const earningsData = earningsStats?.data?.map(item => ({
+    name: item.year.toString(),
+    value: item.earning
+  })) || []
 
   return (
     <div className="p-6 bg-[#EDF3F9] min-h-screen">
@@ -107,43 +147,98 @@ const Bonus = () => {
       </div>
 
       {/* Bottom Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Customers */}
-        <div className="bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="text-sm font-semibold text-[#1A1A1A] mb-3">Customers</h3>
-          <div className="flex items-center justify-between">
-            <img src="/dummy.png" alt="Customer Chart" className="w-16 h-16" />
-            <div className="text-right">
-              <p className="text-xl font-bold text-[#1A1A1A]">34,249</p>
-              <p className="text-xs text-[#999999]">New Customers</p>
-              <p className="text-sm font-semibold text-[#1A1A1A] mt-1">1420</p>
-              <p className="text-xs text-[#999999]">Repeated</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Featured Product */}
-        <div className="bg-white rounded-xl p-4 shadow-sm flex flex-col items-center justify-center">
-          <h3 className="text-sm font-semibold text-[#1A1A1A] mb-2">Featured Product</h3>
-          <img src={bonusItems.find(item => item.name === 'Gold')?.image} alt="Product" className="w-16 h-16 mb-2" />
-          <p className="text-sm font-semibold text-[#1A1A1A]">Gold 100 Coins</p>
-          <p className="text-sm text-[#3E79F7]">₹ {bonusItems.find(item => item.name === 'Gold')?.price}</p>
-        </div>
-
-        {/* Sales Analytics - Recharts Graph */}
-        <div className="bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="text-sm font-semibold text-[#1A1A1A] mb-3">Sales Analytics</h3>
-          <ResponsiveContainer width="100%" height={150}>
-            <BarChart data={salesData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="sales" fill="#3E79F7" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+           {/* Customers */}
+           <div className="bg-white rounded-lg p-4 shadow-sm flex flex-col justify-center items-center text-center">
+             <p className="text-sm font-semibold mb-2">Customers</p>
+             <PieChart width={120} height={120}>
+               <Pie
+                 data={pieData}
+                 cx="50%"
+                 cy="50%"
+                 innerRadius={35}
+                 outerRadius={50}
+                 dataKey="value"
+               >
+                 {pieData.map((entry, index) => (
+                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                 ))}
+               </Pie>
+             </PieChart>
+   
+             <div className="flex items-center justify-center gap-6 mt-4">
+               <div className="text-center">
+                 <p className="text-lg font-semibold text-black">
+                   {customerStats?.data?.newUsers || 0}
+                 </p>
+                 <p className="text-xs text-gray-500 flex items-center justify-center gap-1">
+                   <span className="w-2 h-2 bg-blue-600 rounded-full"></span> New Customers
+                 </p>
+               </div>
+   
+               <div className="text-center">
+                 <p className="text-lg font-semibold text-black">
+                   {customerStats?.data?.repeatedUsers || 0}
+                 </p>
+                 <p className="text-xs text-gray-500 flex items-center justify-center gap-1">
+                   <span className="w-2 h-2 bg-blue-200 rounded-full"></span> Repeated
+                 </p>
+               </div>
+             </div>
+           </div>
+   
+   
+           {/* Featured Product */}
+          <div className="bg-white rounded-lg shadow-sm p-4 flex flex-col items-center justify-between min-h-[220px] w-full">
+             <p className="text-sm font-semibold text-[#1B1E25] mb-2">Featured Product</p>
+   
+             {isDiceLoading ? (
+               <div className="h-[100px] flex items-center justify-center">Loading...</div>
+             ) : diceError ? (
+               <div className="text-red-500 text-sm">Error: {diceError.message}</div>
+             ) : (
+               <div className="relative w-full flex items-center justify-center">
+                 {/* Left Arrow */}
+                 <button className="absolute left-0 bg-white rounded-full p-1 shadow-md hover:bg-gray-100">
+                   <span className="text-xl">&lt;</span>
+                 </button>
+   
+                 {/* Dice Image */}
+                 <img
+                   src={mostPurchasedDice?.data?.image}
+                   alt={mostPurchasedDice?.data?.name}
+                   className="w-[90px] h-[90px] object-contain"
+                 />
+   
+                 {/* Right Arrow */}
+                 <button className="absolute right-0 bg-white rounded-full p-1 shadow-md hover:bg-gray-100">
+                   <span className="text-xl">&gt;</span>
+                 </button>
+               </div>
+             )}
+   
+             {/* Name and Price */}
+             {!isDiceLoading && !diceError && (
+               <>
+                 <p className="text-sm font-semibold text-[#1B1E25] mt-3">{mostPurchasedDice?.data?.name}</p>
+                 <p className="text-sm font-semibold text-[#4880FF]">${mostPurchasedDice?.data?.price}</p>
+               </>
+             )}
+           </div>
+   
+           {/* Sales Analytics */}
+           <div className="bg-white rounded-lg p-4 shadow-sm">
+             <h3 className="text-sm font-medium text-[#1B1E25] mb-2">Sales Analytics</h3>
+             <ResponsiveContainer width="100%" height={120}>
+               <LineChart data={salesData}>
+                 <XAxis dataKey="name" />
+                 <YAxis hide />
+                 <Tooltip />
+                 <Line type="monotone" dataKey="value" stroke="#6366F1" strokeWidth={2} />
+               </LineChart>
+             </ResponsiveContainer>
+           </div>
+         </div>
     </div>
   );
 };

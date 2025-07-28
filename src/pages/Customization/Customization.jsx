@@ -10,7 +10,7 @@ const Customization = () => {
       <h2 className="text-lg font-semibold text-[#1B1E25] mb-6">App Theme Customization</h2>
 
       {/* App Icon, Inner Logo, Splash Screen */}
-      <div className="bg-white p-6 rounded-lg shadow-sm grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      {/* <div className="bg-white p-6 rounded-lg shadow-sm grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {['App Icon', 'Inner Logo', 'Splash Screen Logo'].map((title, index) => (
           <div key={index} className="flex flex-col items-center">
             <h3 className="text-sm font-medium text-[#1B1E25] mb-2">{title}</h3>
@@ -26,7 +26,7 @@ const Customization = () => {
             </button>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* Default Board Selection */}
       <div className="bg-white p-6 rounded-lg shadow-sm">
@@ -61,7 +61,7 @@ const Customization = () => {
       </div>
 
       {/* Ads Section */}
-      <div className="bg-white p-6 rounded-lg shadow-sm mt-8">
+      {/* <div className="bg-white p-6 rounded-lg shadow-sm mt-8">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-sm font-medium text-[#1B1E25]">Ads</h3>
           <button className="bg-[#8B5CF6] text-white px-4 py-1.5 rounded text-sm hover:bg-purple-700 transition">
@@ -111,7 +111,7 @@ const Customization = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Avatar Section */}
       <div className="bg-white p-6 rounded-lg shadow-sm mt-8">
